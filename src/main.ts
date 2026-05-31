@@ -1,27 +1,12 @@
-import { Player } from './player';
-import { Board } from './board';
-import { Renderer } from './renderer';
+import { Game } from './game';
 
-// pega o elemento canvas do HTML
-const canvas = document.getElementById("tela") as HTMLCanvasElement
+const canvas = document.getElementById("tela") as HTMLCanvasElement;
 canvas.width = 800;
 canvas.height = 600;
-// pega o "contexto" — é por ele que você desenha
-const ctx = canvas.getContext("2d")!
 
-const board = new Board({width : 800, height : 600, color : 'gray'});
-const player1 = new Player({xcord : 100, ycord : 100, color : 'blue'});
-const renderer = new Renderer(ctx);
+// Pega o "contexto" de renderização
+const ctx = canvas.getContext("2d")!;
 
-function loop(){
-    renderer.render(board,player1);
-    requestAnimationFrame(loop);
-    player1.updatePosition();
-}
-
-window.addEventListener('keydown', (e) =>{
-  player1.changePlayerDirection(e.key);
-});
-
-loop();
-
+// Instancia a classe Game passando o contexto e inicia o loop
+const game = new Game(ctx);
+game.start();

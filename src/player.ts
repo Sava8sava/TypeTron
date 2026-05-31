@@ -19,6 +19,7 @@ export class Player{
     public color : string;
     private speed : number = 3;
     public traceColor = 'red';
+    public isPlayerDead = false;
 
     constructor(config : PlayerConfig){
       this.xcord = config.xcord
@@ -26,16 +27,25 @@ export class Player{
       this.color = config.color
       this.saveTrace();
     }
-    
+     
     private saveTrace(){
       this.tracer.push({x : this.xcord, y : this.ycord}); 
     }
+    
+    //checa se o player bateu numa parede ou no proprio tracer
+    public isPlayerCrash(boardWidth : number, boardHeight : number) : boolean{
+      if (this.xcord < 0 || this.xcord > boardWidth || this.ycord < 0 || this.ycord > boardHeight) {
+          this.isPlayerDead = true;
+          return true;
+      }
+      return false;
+    }
 
-    changePlayerDirection(key : string){
-      if(key === "ArrowRight" && this.playerDirection != PlayerPossibleDirection.Left) this.playerDirection = PlayerPossibleDirection.Right;
-      if(key === "ArrowLeft" && this.playerDirection != PlayerPossibleDirection.Right) this.playerDirection = PlayerPossibleDirection.Left;
-      if(key === "ArrowUp" && this.playerDirection != PlayerPossibleDirection.Down) this.playerDirection = PlayerPossibleDirection.Up;
-      if(key === "ArrowDown" && this.playerDirection != PlayerPossibleDirection.Up) this.playerDirection = PlayerPossibleDirection.Down;
+    changePlayerDirection(keys : {[key :string] : boolean}){
+      if(keys["ArrowRight"] && this.playerDirection != PlayerPossibleDirection.Left) this.playerDirection = PlayerPossibleDirection.Right;
+      if(keys["ArrowLeft"] && this.playerDirection != PlayerPossibleDirection.Right) this.playerDirection = PlayerPossibleDirection.Left;
+      if(keys["ArrowUp"] && this.playerDirection != PlayerPossibleDirection.Down) this.playerDirection = PlayerPossibleDirection.Up;
+      if(keys["ArrowDown"] && this.playerDirection != PlayerPossibleDirection.Up) this.playerDirection = PlayerPossibleDirection.Down;
     }
 
     updatePosition() {
