@@ -16,10 +16,11 @@ const renderer = new Renderer(ctx);
 function loop(){
     renderer.render(board,player1);
     requestAnimationFrame(loop);
+    player1.updatePosition();
 }
 
 window.addEventListener('keydown', (e) =>{
-  player1.movePlayer(e.key);
+  player1.changePlayerDirection(e.key);
 });
 
 loop();

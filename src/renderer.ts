@@ -12,6 +12,7 @@ export class Renderer {
   render(board: Board, player: Player) {
     this.clear(); 
     this.drawBoard(board);
+    this.drawEdges(board);
     this.drawTrace(player);
     this.drawPlayer(player);
   }
@@ -20,10 +21,18 @@ export class Renderer {
     // Limpa todo o canvas antes de desenhar o próximo frame
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
   }
-
+ 
   private drawBoard(board: Board) {
     this.ctx.fillStyle = board.color;
     this.ctx.fillRect(0, 0, board.width, board.height);
+  }
+  
+  private drawEdges(board : Board){
+    this.ctx.fillStyle = "green";
+    this.ctx.fillRect(0, 0, 5, board.height);
+    this.ctx.fillRect(0, 0, board.width, 5);
+    this.ctx.fillRect(0, board.height, board.width, -5);
+    this.ctx.fillRect(board.width, 0, -5, board.height);
   }
 
   private drawPlayer(player: Player) {
