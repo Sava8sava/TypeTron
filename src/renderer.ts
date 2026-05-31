@@ -8,13 +8,11 @@ export class Renderer {
     this.ctx = context;
   }
 
-  // O método principal que limpa e desenha tudo
   render(board: Board, player: Player) {
     this.clear(); 
     this.drawBoard(board);
-    this.drawEdges(board);
-    this.drawTrace(player);
-    this.drawPlayer(player);
+    this.drawGridContents(board, player)
+    this.drawPlayer(player, board.gridSize);
   }
 
   private clear() {
@@ -27,23 +25,28 @@ export class Renderer {
     this.ctx.fillRect(0, 0, board.width, board.height);
   }
   
-  private drawEdges(board : Board){
-    this.ctx.fillStyle = "green";
-    this.ctx.fillRect(0, 0, 5, board.height);
-    this.ctx.fillRect(0, 0, board.width, 5);
-    this.ctx.fillRect(0, board.height, board.width, -5);
-    this.ctx.fillRect(board.width, 0, -5, board.height);
-  }
+  private drawGridContents(board: Board, player: Player) {
+    for (let x = 0; x < board.cols; x++) {
+      for (let y = 0; y < board.rows; y++) {
+        const cellValue = board.grid[x][y];
 
-  private drawPlayer(player: Player) {
-    this.ctx.fillStyle = player.color; // Ou player.color
-    this.ctx.fillRect(player.xcord, player.ycord, 10, 10);
+        if (cellValue === 3) {
+          // É uma borda verde
+          this.ctx.fillStyle = "green";
+          this.ctx.fillRect(x * board.gridSize, y * board.gridSize, board.gridSize, board.gridSize);
+        } else if (cellValue === 1) {
+          // É o rastro do Player 1
+          this.ctx.fillStyle = player.traceColor;
+          this.ctx.fillRect(x * board.gridSize, y * board.gridSize, board.gridSize, board.gridSize);
+        }
+        // Se colocar um Player 2 no futuro: else if (cellValue === 2) { ... }
+      }
+    }
   }
-
-  private drawTrace(player : Player) {
-    this.ctx.fillStyle = player.traceColor;
-    player.tracer.forEach(point =>{
-      this.ctx.fillRect(point.x,point.y,10,10);
-    });
+ 
+  private drawPlayer(player: Player, gridSize : number) {
+    if (player.isPlayerDead) return;
+    this.ctx.fillStyle = player.color;
+    this.ctx.fillRect(player.xcord * gridSize, player.ycord * gridSize, gridSize, gridSize);
   }
 }

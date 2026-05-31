@@ -15,9 +15,8 @@ export class Player{
     public xcord: number;
     public ycord: number;
     private playerDirection : number = PlayerPossibleDirection.Down;
-    public tracer : Point[] = [];
     public color : string;
-    private speed : number = 3;
+    private speed : number = 1;
     public traceColor = 'red';
     public isPlayerDead = false;
 
@@ -25,13 +24,9 @@ export class Player{
       this.xcord = config.xcord
       this.ycord = config.ycord
       this.color = config.color
-      this.saveTrace();
+
     }
-     
-    private saveTrace(){
-      this.tracer.push({x : this.xcord, y : this.ycord}); 
-    }
-    
+       
     //checa se o player bateu numa parede ou no proprio tracer
     public isPlayerCrash(boardWidth : number, boardHeight : number) : boolean{
       if (this.xcord < 0 || this.xcord > boardWidth || this.ycord < 0 || this.ycord > boardHeight) {
@@ -55,6 +50,5 @@ export class Player{
           case PlayerPossibleDirection.Up:    this.ycord -= this.speed; break;
           case PlayerPossibleDirection.Down:  this.ycord += this.speed; break;
       }
-      this.saveTrace(); // Salva o rastro enquanto ele anda sozinho
     }
   }

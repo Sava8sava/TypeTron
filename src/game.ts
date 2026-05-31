@@ -10,12 +10,20 @@ export class Game {
     private renderer: Renderer;
     private keyPressed: { [key: string]: boolean} = {};
 
+    private lastUpdateTime: number = 0;
+    private updateTimeInterval: number = 100;
+
     constructor(ctx: CanvasRenderingContext2D) {
         this.board = new Board({ width: 800, height: 600, color: BOARDCOLOR });
-        this.player1 = new Player({ xcord: 100, ycord: 100, color: 'blue' });
+        this.player1 = new Player({ xcord: 40, ycord: 30, color: 'blue' });
         this.renderer = new Renderer(ctx);
 
         this.initInput();
+        this.spawnPlayer();
+    }
+    
+    private spawnPlayer() {
+        this.board.grid[this.player1.xcord][this.player1.ycord] = 1;
     }
 
     // Configura os ouvintes de teclado vinculados a este jogo
@@ -34,16 +42,22 @@ export class Game {
     }
 
     // O loop do jogo transformado em um método da classe
-    public start = () => {
-        if(!this.player1.isPlayerDead){
-          this.handleInput();
-          this.player1.updatePosition();
-          if(this.player1.isPlayerCrash(800,600)){
-            console.log("bateu!");
-          }
+    public start = (timestamp : number = 0) => {
+        this.handleInput();
+        const deltaTime = timestamp - this.lastUpdateTime;
         
+      if (!this.player1.isPlayerDead && deltaTime >= this.updateTimeInterval) {
+          this.player1.updatePosition();          
+          if(this.board.isOccupied(this.player1.xcord, this.player1.ycord)){
+            console.log("bateu!");
+            this.player1.isPlayerDead = true;
+          }else{
+            this.board.grid[this.player1.xcord][this.player1.ycord] = 1; 
+          }
+          this.lastUpdateTime = timestamp;
+      }
           this.renderer.render(this.board, this.player1);
           requestAnimationFrame(this.start);
     }
   }
-}
+
